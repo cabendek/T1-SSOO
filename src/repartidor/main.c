@@ -26,16 +26,20 @@ int luz_semaforo(int sig, siginfo_t *siginfo, void *context){
 
 */
 int main(int argc, char const *argv[]){
-  printf("Primer argumento, %s\n", argv[0]);
-  printf("Segundo argumento, %s\n", argv[1]);
 
-  int first_value = atoi(argv[0]);
-  int second_value = atoi(argv[1]);
-  int result = first_value+second_value;
-  printf("\tEl resultado es =>[%i]\n",result);
+  int distancia_semaforo1 = atoi(argv[0]);
+  int distancia_semaforo2 = atoi(argv[1]);
+  int distancia_semaforo3 = atoi(argv[2]);
+  int distancia_bodega = atoi(argv[3]);
+
+  // Validando valores de variables
+  printf("distancia_semaforo1_s: %d\n", distancia_semaforo1);
+  printf("distancia_semaforo2_s: %d\n", distancia_semaforo2);
+  printf("distancia_semaforo3_s: %d\n", distancia_semaforo3);
+  printf("distancia_bodega_s:    %d\n", distancia_bodega);
 
   printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
-  sleep(1);
+  //sleep(1);
   return(0);
 /*
   int posicion_actual = 0;
