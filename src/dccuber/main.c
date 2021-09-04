@@ -157,25 +157,25 @@ int main(int argc, char const *argv[])
       char* argf[] = {pid_padre_s,tiempo_1_s,NULL};
       if(execv("semaforo6", argf) == -1){
         printf("\nFallo la conexion del 1er semaforo\n");
-      }
-    }
-    else if (!semaforo2) {
+      };
+      
+      } else if (!semaforo2) {
       char tiempo_2_s[30];
       sprintf(tiempo_2_s,"%d", tiempo_2);
 
-      char* argf[] = {pid_padre_s,tiempo_2_s,NULL}; 
-      if(execv("semaforo", argf) == -1){
+      char* argf[] = {pid_padre_s,tiempo_2_s,NULL};
+      if(execv("semaforo", argf) == -1){
         printf("\nFallo la conexion del 2do semaforo\n");
-      }
-    }
-    else if (!semaforo3) {
+      };
+
+      } else if (!semaforo3) {
       char tiempo_3_s[30];
       sprintf(tiempo_3_s,"%d", tiempo_3);
 
       char* argf[] = {pid_padre_s,tiempo_3_s,NULL};
-      if(execv("semaforo", argf) == -1){
+      if(execv("semaforo", argf) == -1){
         printf("\nFallo la conexion del 3er semaforo\n");
-      }
+      };
     };
     wait(NULL);
     return 0;
