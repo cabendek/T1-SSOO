@@ -124,13 +124,18 @@ int main(int argc, char const *argv[])
 
         
         char* args[] = {d_semaforo1_int, d_semaforo2_int, d_semaforo3_int, d_bodega_int, NULL};
-        
+
         if(execv("repartidor", args) == -1) 
         {
             printf("\nfailed connection\n");
+
         }
         printf("ESTO NO SE IMPRIME");
       }
+        free(d_semaforo1_int);
+        free(d_semaforo2_int);
+        free(d_semaforo3_int);
+        free(d_bodega_int);
 
     };
 
