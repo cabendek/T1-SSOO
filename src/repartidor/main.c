@@ -4,10 +4,23 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-//Recibe: distancia_semaforo1, distancia_semaforo2, distancia_semaforo3, distancia_bodega
-// hacer función para recibir
+// funcion para crear el array - camino
+// int* crear_camino(int distancia_semaforo1, int distancia_semaforo2, int distancia_semaforo3, int distancia_bodega)
+// {
+//   int* camino = calloc(distancia_bodega, sizeof(int));
+//   for (int i = 0, i <= distancia_bodega, i++)
+//   {
+//     if ((i = distancia_semaforo1) || (i = distancia_semaforo2) || (i = distancia_semaforo3)){
+//       camino[i] = 1;
+//     }
+//     else if (i = distancia_bodega)
+//     {
+//     camino[i] = 2;
+//     }
+//   }
+//   return camino;
+// }
 
-//Crear array:
 /*
 int* camino = calloc(distancia_bodega, sizeof(int));
 for (int i = 0, i <= distancia_bodega, i++){
@@ -31,14 +44,17 @@ int main(int argc, char const *argv[]){
   int distancia_semaforo2 = atoi(argv[1]);
   int distancia_semaforo3 = atoi(argv[2]);
   int distancia_bodega = atoi(argv[3]);
-
+  
   // Validando valores de variables
   printf("distancia_semaforo1_s: %d\n", distancia_semaforo1);
   printf("distancia_semaforo2_s: %d\n", distancia_semaforo2);
   printf("distancia_semaforo3_s: %d\n", distancia_semaforo3);
   printf("distancia_bodega_s:    %d\n", distancia_bodega);
-
   printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
+
+  // Creamos el camino (array) a recorrer por el repartidor
+  
+
   //sleep(1);
   return(0);
 /*
