@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 //Recibe: distancia_semaforo1, distancia_semaforo2, distancia_semaforo3, distancia_bodega
 // hacer función para recibir
@@ -23,8 +26,15 @@ int luz_semaforo(int sig, siginfo_t *siginfo, void *context){
 
 */
 int main(int argc, char const *argv[]){
-  
-  printf("-----------------------I'm the REPARTIDOR process and my PID is: %i\n", getpid());
+  printf("Primer argumento, %s\n", argv[0]);
+  printf("Segundo argumento, %s\n", argv[1]);
+
+  int first_value = atoi(argv[0]);
+  int second_value = atoi(argv[1]);
+  int result = first_value+second_value;
+  printf("\tEl resultado es =>[%i]\n",result);
+
+  printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
   sleep(1);
   return(0);
 /*

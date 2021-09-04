@@ -106,7 +106,7 @@ int main(int argc, char const *argv[])
       if (!repartidor){
         printf("REPARTIDOR: Hola soy un repartidor!\n");
         
-        char* args[] = {"repartidor", "2", "1", NULL };
+        char* args[] = {"2", "1", NULL };
         
         if(execv("repartidor", args) == -1) {
             printf("\nfailed connection\n");}
@@ -118,7 +118,7 @@ int main(int argc, char const *argv[])
 
     wait(NULL); //Manejo de finalizacion
     printf("Ahora si me duermo");
-    
+
   } else {
     /*
     int semaforo1 = fork();
