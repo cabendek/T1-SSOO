@@ -36,8 +36,8 @@ int luz_semaforo(int sig, siginfo_t *siginfo, void *context){
   int number_received = siginfo->si_value.sival_int;
   return number_received;
 };
-
 */
+
 int main(int argc, char const *argv[]){
 
   int distancia_semaforo1 = atoi(argv[0]);
@@ -56,7 +56,7 @@ int main(int argc, char const *argv[]){
   
 
   //sleep(1);
-  return(0);
+  return 0;
 /*
   int posicion_actual = 0;
   int semaforo_cruzado = 0;

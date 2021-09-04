@@ -103,60 +103,83 @@ int main(int argc, char const *argv[])
       sleep(tiempo_de_creacion);
       int repartidor = fork();
 
-      if (!repartidor)
-      {
+      if (!repartidor){
+
         printf("REPARTIDOR: Hola soy un repartidor!\n");
-
-        
-      // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
-      // Semaforo 1
-      int* d_semaforo1_int[30];
-      snprintf(d_semaforo1_int, 30 * sizeof(char), "%d", distancia_semaforo1);
-      // Semaforo 2
-      int* d_semaforo2_int[30];
-      snprintf(d_semaforo2_int, 30 * sizeof(char), "%d", distancia_semaforo2);
-      // Semaforo 3
-      int* d_semaforo3_int[30];
-      snprintf(d_semaforo3_int, 30 * sizeof(char), "%d", distancia_semaforo3);
-      // Bodega
-      int* d_bodega_int[30];
-      snprintf(d_bodega_int, 30 * sizeof(char), "%d", distancia_bodega);
-
+        exit(0);
+  
+        // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
+        /*
+        // Semaforo 1
+        int* d_semaforo1_int[30];
+        snprintf(d_semaforo1_int, 30 * sizeof(char), "%d", distancia_semaforo1);
+        // Semaforo 2
+        int* d_semaforo2_int[30];
+        snprintf(d_semaforo2_int, 30 * sizeof(char), "%d", distancia_semaforo2);
+        // Semaforo 3
+        int* d_semaforo3_int[30];
+        snprintf(d_semaforo3_int, 30 * sizeof(char), "%d", distancia_semaforo3);
+        // Bodega
+        int* d_bodega_int[30];
+        snprintf(d_bodega_int, 30 * sizeof(char), "%d", distancia_bodega);
         
         char* args[] = {d_semaforo1_int, d_semaforo2_int, d_semaforo3_int, d_bodega_int, NULL};
 
         if(execv("repartidor", args) == -1) 
         {
             printf("\nfailed connection\n");
-
         }
+        */
         printf("ESTO NO SE IMPRIME");
       }
 
     };
 
     wait(NULL); //Manejo de finalizacion
-    printf("Ahora si me duermo");
-    return(0);
+    exit(0);
 
   } 
   else 
   {
-    /*
+    
     int semaforo1 = fork();
     int semaforo2 = fork();
     int semaforo3 = fork();
+    int pid_padre = getpid();
+
+    char pid_padre_s[30];
+    sprintf(pid_padre_s,"%d",pid_padre);
 
     if (!semaforo1){
-        //execute() semaforo 1
-      }
-    else if (!semaforo2) {
-        //execute() semaforo 2
+      char tiempo_1_s[30];
+      sprintf(tiempo_1_s,"%d", tiempo_1);
+      
+      char* argf[] = {pid_padre_s,tiempo_1_s,NULL};
+      if(execv("semaforo6", argf) == -1){
+        printf("\nFallo la conexion del 1er semaforo\n");
       }
+    }
+    else if (!semaforo2) {
+      char tiempo_2_s[30];
+      sprintf(tiempo_2_s,"%d", tiempo_2);
+
+      char* argf[] = {pid_padre_s,tiempo_2_s,NULL}; 
+      if(execv("semaforo", argf) == -1){
+        printf("\nFallo la conexion del 2do semaforo\n");
+      }
+    }
     else if (!semaforo3) {
-        //execute() semaforo 3
-      };
-      */
+      char tiempo_3_s[30];
+      sprintf(tiempo_3_s,"%d", tiempo_3);
+
+      char* argf[] = {pid_padre_s,tiempo_3_s,NULL};
+      if(execv("semaforo", argf) == -1){
+        printf("\nFallo la conexion del 3er semaforo\n");
+      }
+    };
+    wait(NULL);
+    return 0;
+      
   }
 
   return 0;

@@ -40,7 +40,7 @@ int finalizar (int funcionando)
 int main(int argc, char const *argv[])
 {
   printf("I'm the SEMAFORO process and my PID is: %i\n", getpid());
-  return(0);
+  return 0;
 }
   /*
   //LOGRAR RECIBIR LA VARIABLE tiempo_semaforo y pid_fabrica
