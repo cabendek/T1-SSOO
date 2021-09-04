@@ -110,16 +110,16 @@ int main(int argc, char const *argv[])
         
       // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
       // Semaforo 1
-      char* d_semaforo1_int = malloc(30 * sizeof(char));
+      int* d_semaforo1_int[30];
       snprintf(d_semaforo1_int, 30 * sizeof(char), "%d", distancia_semaforo1);
       // Semaforo 2
-      char* d_semaforo2_int = malloc(30 * sizeof(char));
+      int* d_semaforo2_int[30];
       snprintf(d_semaforo2_int, 30 * sizeof(char), "%d", distancia_semaforo2);
       // Semaforo 3
-      char* d_semaforo3_int = malloc(30 * sizeof(char));
+      int* d_semaforo3_int[30];
       snprintf(d_semaforo3_int, 30 * sizeof(char), "%d", distancia_semaforo3);
       // Bodega
-      char* d_bodega_int = malloc(30 * sizeof(char));
+      int* d_bodega_int[30];
       snprintf(d_bodega_int, 30 * sizeof(char), "%d", distancia_bodega);
 
         
@@ -132,10 +132,6 @@ int main(int argc, char const *argv[])
         }
         printf("ESTO NO SE IMPRIME");
       }
-        free(d_semaforo1_int);
-        free(d_semaforo2_int);
-        free(d_semaforo3_int);
-        free(d_bodega_int);
 
     };
 
