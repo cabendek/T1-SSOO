@@ -8,6 +8,7 @@
 
 int estado_semaforos[3] = {1,1,1};
 
+
 int cambio_semaforo (int semaforo){
   if (estado_semaforos[semaforo] == 0){
     estado_semaforos[semaforo] = 1;
@@ -19,6 +20,11 @@ int cambio_semaforo (int semaforo){
 
   return 0;
 };
+
+void print(int sig, siginfo_t *siginfo, void *context) {
+  int number_received = siginfo->si_value.sival_int;
+  printf("\n\t -----> CTMMMM LLEGO Y RECIBI EL SEMAFORO: %i\n", number_received);
+}
 
 /*
 void consultar_semaforo (int semaforo, int PID){
@@ -81,8 +87,8 @@ int main(int argc, char const *argv[])
   int tiempo_3 = linea_2[4];
 
   // Printeamos variables (para verificarlas)
-  printf("%d, %d, %d, %d\n",distancia_semaforo1, distancia_semaforo2, distancia_semaforo3, distancia_bodega);
-  printf("%d, %d, %d, %d, %d\n",tiempo_de_creacion, envios_necesarios, tiempo_1, tiempo_2, tiempo_3);
+  // printf("%d, %d, %d, %d\n",distancia_semaforo1, distancia_semaforo2, distancia_semaforo3, distancia_bodega);
+  // printf("%d, %d, %d, %d, %d\n",tiempo_de_creacion, envios_necesarios, tiempo_1, tiempo_2, tiempo_3);
 
   
   // Proceso Principal crea a Fabrica:
@@ -90,95 +96,90 @@ int main(int argc, char const *argv[])
 
   int fabrica = fork();
   
-  if (!fabrica)
-    {
+  if (!fabrica) {
     //connect_sigaction (SIGUSR1, interpretar_señal); //recibe del semáforo o del repartidor
-    printf("FABRICA: Hola soy la Fabrica!\n");
+    printf("FABRICA: Hola soy la Fabrica! con PID: %d\n",getpid());
 
     // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
     /* REPARTIDORES */
 
-    for (int i = 0; i < envios_necesarios; i++)
-    { 
+    for (int i = 0; i < envios_necesarios; i++) { 
       sleep(tiempo_de_creacion);
       int repartidor = fork();
 
       if (!repartidor){
-
-        printf("REPARTIDOR: Hola soy un repartidor!\n");
-        exit(0);
   
         // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
-        /*
-        // Semaforo 1
-        int* d_semaforo1_int[30];
-        snprintf(d_semaforo1_int, 30 * sizeof(char), "%d", distancia_semaforo1);
-        // Semaforo 2
-        int* d_semaforo2_int[30];
-        snprintf(d_semaforo2_int, 30 * sizeof(char), "%d", distancia_semaforo2);
-        // Semaforo 3
-        int* d_semaforo3_int[30];
-        snprintf(d_semaforo3_int, 30 * sizeof(char), "%d", distancia_semaforo3);
-        // Bodega
-        int* d_bodega_int[30];
-        snprintf(d_bodega_int, 30 * sizeof(char), "%d", distancia_bodega);
         
-        char* args[] = {d_semaforo1_int, d_semaforo2_int, d_semaforo3_int, d_bodega_int, NULL};
+        // Semaforo 1      
+        char d_semaforo1_s[30];
+        sprintf(d_semaforo1_s, "%d", distancia_semaforo1);
+        // Semaforo 2
+        char d_semaforo2_s[30];
+        sprintf(d_semaforo2_s, "%d", distancia_semaforo2);
+        // Semaforo 3
+        char d_semaforo3_s[30];
+        sprintf(d_semaforo3_s, "%d", distancia_semaforo3);
+        // Bodega
+        char d_bodega_s[30];
+        sprintf(d_bodega_s, "%d", distancia_bodega);
+        
+        char* args[] = {d_semaforo1_s, d_semaforo2_s, d_semaforo3_s, d_bodega_s, NULL};
 
-        if(execv("repartidor", args) == -1) 
-        {
-            printf("\nfailed connection\n");
+        if(execv("repartidor", args) == -1) {
+          printf("\nfailed connection\n");
         }
-        */
         printf("ESTO NO SE IMPRIME");
       }
-
     };
 
+    connect_sigaction(SIGUSR1,print);
     wait(NULL); //Manejo de finalizacion
     exit(0);
 
-  } 
-  else 
-  {
+  } else {
+    
+    int pid_padre = getpid();
+    char fabrica_s[10];
+    sprintf(fabrica_s,"%d",fabrica);
     
     int semaforo1 = fork();
-    int semaforo2 = fork();
-    int semaforo3 = fork();
-    int pid_padre = getpid();
+    if (!semaforo1) {
 
-    char pid_padre_s[30];
-    sprintf(pid_padre_s,"%d",pid_padre);
-
-    if (!semaforo1){
       char tiempo_1_s[30];
       sprintf(tiempo_1_s,"%d", tiempo_1);
       
-      char* argf[] = {pid_padre_s,tiempo_1_s,NULL};
-      if(execv("semaforo6", argf) == -1){
+      char* argf[] = {tiempo_1_s,fabrica_s,NULL};
+      if(execv("semaforo", argf) == -1){
         printf("\nFallo la conexion del 1er semaforo\n");
       };
-      
-      } else if (!semaforo2) {
-      char tiempo_2_s[30];
-      sprintf(tiempo_2_s,"%d", tiempo_2);
+    } else {
+      int semaforo2 = fork();
+      if (!semaforo2) {
+        // printf("\nSEMAFORO 2\n");
+        char tiempo_2_s[30];
+        sprintf(tiempo_2_s,"%d", tiempo_2);
 
-      char* argf[] = {pid_padre_s,tiempo_2_s,NULL};
-      if(execv("semaforo", argf) == -1){
-        printf("\nFallo la conexion del 2do semaforo\n");
-      };
+        char* argf[] = {tiempo_2_s,fabrica_s,NULL};
+        if(execv("semaforo", argf) == -1){
+          printf("\nFallo la conexion del 2do semaforo\n");
+        };
+      } else {
+          int semaforo3 = fork();
+          if (!semaforo3) {
+            // printf("\nSEMAFORO 3\n");
+            char tiempo_3_s[30];
+            sprintf(tiempo_3_s,"%d", tiempo_3);
 
-      } else if (!semaforo3) {
-      char tiempo_3_s[30];
-      sprintf(tiempo_3_s,"%d", tiempo_3);
+            char* argf[] = {tiempo_3_s,fabrica_s,NULL};
+            if(execv("semaforo", argf) == -1){
+              printf("\nFallo la conexion del 3er semaforo\n");
+            };
+          } 
+      }
+    }
 
-      char* argf[] = {pid_padre_s,tiempo_3_s,NULL};
-      if(execv("semaforo", argf) == -1){
-        printf("\nFallo la conexion del 3er semaforo\n");
-      };
-    };
     wait(NULL);
-    return 0;
       
   }
 

@@ -46,16 +46,17 @@ int main(int argc, char const *argv[]){
   int distancia_bodega = atoi(argv[3]);
   
   // Validando valores de variables
-  printf("distancia_semaforo1_s: %d\n", distancia_semaforo1);
-  printf("distancia_semaforo2_s: %d\n", distancia_semaforo2);
-  printf("distancia_semaforo3_s: %d\n", distancia_semaforo3);
-  printf("distancia_bodega_s:    %d\n", distancia_bodega);
-  printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
+  // printf("distancia_semaforo1: %d\n", distancia_semaforo1);
+  // printf("distancia_semaforo2: %d\n", distancia_semaforo2);
+  // printf("distancia_semaforo3: %d\n", distancia_semaforo3);
+  // printf("distancia_bodega:    %d\n", distancia_bodega);
+  // printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
 
   // Creamos el camino (array) a recorrer por el repartidor
   
 
   //sleep(1);
+  exit (0);
   return 0;
 /*
   int posicion_actual = 0;
