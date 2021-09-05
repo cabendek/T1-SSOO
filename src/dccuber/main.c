@@ -101,6 +101,9 @@ int main(int argc, char const *argv[])
     //connect_sigaction (SIGUSR1, interpretar_señal); //recibe del semáforo o del repartidor
     printf("FABRICA: Hola soy la Fabrica! con PID: %d\n",getpid());
 
+    //Creamos el camino
+    
+
     // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
     /* REPARTIDORES */
 
@@ -118,7 +121,7 @@ int main(int argc, char const *argv[])
         printf("---ENTREE AQUI----\n");
         // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
         
-        // Semaforo 1      
+        // Semaforo 1
         char d_semaforo1_s[30];
         sprintf(d_semaforo1_s, "%d", distancia_semaforo1);
         // Semaforo 2
