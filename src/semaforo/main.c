@@ -26,7 +26,7 @@ void cambio_luz (Semaforo* semaforo, int pid_fabrica) {
     semaforo->luz_semaforo = 0;
   }
   semaforo->contador_cambios += 1;
-  printf("Accedi a la funcion para mandar señal al PID: %d\n", pid_fabrica);
+  // printf("Accedi a la funcion para mandar señal al PID: %d\n", pid_fabrica);
   send_signal_with_int(pid_fabrica, 0);
 }
 

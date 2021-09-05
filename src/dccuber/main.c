@@ -25,7 +25,6 @@ int cambio_semaforo (int semaforo){
 void print(int sig, siginfo_t *siginfo, void *context) {
   int number_received = siginfo->si_value.sival_int;
   printf("\n\t -----> CTMMMM LLEGO Y RECIBI EL SEMAFORO: %i\n", number_received);
-  exit(0);
 }
 
 /*
@@ -104,16 +103,19 @@ int main(int argc, char const *argv[])
 
     // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
     /* REPARTIDORES */
-    printf("\nEsto SI se deberia imprimir\n");
+
     connect_sigaction(SIGUSR1,print);
 
     for (int i = 0; i < envios_necesarios; i++) { 
-      printf("---ENTREE AQUI----\n");
+      
       sleep(tiempo_de_creacion);
+
+      printf("**TIEMPO DE ESPERA: %d SEG\n",tiempo_de_creacion);
       int repartidor = fork();
 
       if (!repartidor){
   
+        printf("---ENTREE AQUI----\n");
         // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
         
         // Semaforo 1      
@@ -141,7 +143,7 @@ int main(int argc, char const *argv[])
     wait(NULL); //Manejo de finalizacion
 
   } else {
-    
+
     char fabrica_s[10];
     sprintf(fabrica_s,"%d",fabrica);
     

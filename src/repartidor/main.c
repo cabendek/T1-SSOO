@@ -50,7 +50,7 @@ int main(int argc, char const *argv[]){
   // printf("distancia_semaforo2: %d\n", distancia_semaforo2);
   // printf("distancia_semaforo3: %d\n", distancia_semaforo3);
   // printf("distancia_bodega:    %d\n", distancia_bodega);
-  printf("I'm the REPARTIDOR process and my PID is: %i\n", getpid());
+  printf("I'm the REPARTIDOR process and my PID is: %i ---------------------------------------\n", getpid());
 
   // Creamos el camino (array) a recorrer por el repartidor
   
