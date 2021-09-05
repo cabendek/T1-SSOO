@@ -5,6 +5,8 @@
 
 #include "../file_manager/manager.h"
 
+int id_semaforo;
+
 typedef struct semaforo {
   int luz_semaforo;
   int contador_cambios;
@@ -27,7 +29,8 @@ void cambio_luz (Semaforo* semaforo, int pid_fabrica) {
   }
   semaforo->contador_cambios += 1;
   // printf("Accedi a la funcion para mandar señal al PID: %d\n", pid_fabrica);
-  send_signal_with_int(pid_fabrica, 0);
+  int retorno = 10 + id_semaforo;
+  send_signal_with_int(pid_fabrica, retorno);
 }
 
 int finalizar (int funcionando) {
@@ -40,8 +43,11 @@ int main(int argc, char const *argv[]) {
   
   int tiempo = atoi(argv[0]);
   int pid_fabrica = atoi(argv[1]);
+  int id = atoi(argv[2]);
+  id_semaforo = id;
   // printf("pid_padre: %d\n", getppid());
   // printf("tiempo:    %d\n", tiempo);
+  // printf("id:        %d\n", id_semaforo);
   // printf("I'm the SEMAFORO process and my PID is: %i\n", getpid());
   
   // instanciar semáforo
@@ -51,8 +57,7 @@ int main(int argc, char const *argv[]) {
   int funcionando = true;
 
   for (int i = 0; i<10; i++) {
-    sleep(1);
-    printf("Deberia cambiar la luz\n");
+    sleep(tiempo);
     cambio_luz(semaforo, pid_fabrica);
     // receptor de señal: SIGNAL (alarma, finalizar(funcionando))
   }; 
