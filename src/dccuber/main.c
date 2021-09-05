@@ -10,6 +10,21 @@
 int estado_semaforos[3] = {1,1,1};
 
 
+void handle_sigalrm(int sig) {
+  // Vamos a enviarle todos los números al hijo
+
+  int repartidor = fork();
+
+  if (!repartidor){
+    printf(">> Cree un repartidor!!\n");
+    char* args[] = {0,0,NULL};
+    if(execv("repartidor", args) == -1) {
+      printf("\nfailed connection\n");
+    }
+  };
+  alarm(x);
+};
+
 int cambio_semaforo (int semaforo){
   if (estado_semaforos[semaforo] == 0){
     estado_semaforos[semaforo] = 1;
@@ -102,48 +117,34 @@ int main(int argc, char const *argv[])
     printf("FABRICA: Hola soy la Fabrica! con PID: %d\n",getpid());
 
     //Creamos el camino
-    
+    int* camino = calloc(distancia_bodega, sizeof(int));
+    for (int i = 0; i <= distancia_bodega; i++){
+      if ((i == distancia_semaforo1) || (i == distancia_semaforo2) || (i == distancia_semaforo3)) {
+        camino[i] = 1;
+      } else if (i == distancia_bodega){
+        camino[i] = 2;
+      } else {
+        camino[i] = 0;
+      };
+    };
+
+    for(int loop = 0; loop < distancia_bodega+1; loop++){
+      printf("%d ", camino[loop]);
+    }
 
     // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
+    
     /* REPARTIDORES */
 
     connect_sigaction(SIGUSR1,print);
+    signal(SIGALRM, handle_sigalrm);
+    
+    alarm(tiempo_de_creacion);
 
-    for (int i = 0; i < envios_necesarios; i++) { 
-      
-      sleep(tiempo_de_creacion);
-
-      printf("**TIEMPO DE ESPERA: %d SEG\n",tiempo_de_creacion);
-      int repartidor = fork();
-
-      if (!repartidor){
-  
-        printf("---ENTREE AQUI----\n");
-        // transformamos a char* cada valor bajo el supuesto de que no habran numeros con mas de 30 digitos
-        
-        // Semaforo 1
-        char d_semaforo1_s[30];
-        sprintf(d_semaforo1_s, "%d", distancia_semaforo1);
-        // Semaforo 2
-        char d_semaforo2_s[30];
-        sprintf(d_semaforo2_s, "%d", distancia_semaforo2);
-        // Semaforo 3
-        char d_semaforo3_s[30];
-        sprintf(d_semaforo3_s, "%d", distancia_semaforo3);
-        // Bodega
-        char d_bodega_s[30];
-        sprintf(d_bodega_s, "%d", distancia_bodega);
-        
-        char* args[] = {d_semaforo1_s, d_semaforo2_s, d_semaforo3_s, d_bodega_s, NULL};
-
-        if(execv("repartidor", args) == -1) {
-          printf("\nfailed connection\n");
-        }
-      }
-    };
     while(true);
     printf("\n\tEsto NO se deberia imprimir\n");
     wait(NULL); //Manejo de finalizacion
+    free(camino);
 
   } else {
 

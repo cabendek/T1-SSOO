@@ -40,10 +40,10 @@ int luz_semaforo(int sig, siginfo_t *siginfo, void *context){
 
 int main(int argc, char const *argv[]){
 
-  int distancia_semaforo1 = atoi(argv[0]);
-  int distancia_semaforo2 = atoi(argv[1]);
-  int distancia_semaforo3 = atoi(argv[2]);
-  int distancia_bodega = atoi(argv[3]);
+  // int distancia_semaforo1 = atoi(argv[0]);
+  // int distancia_semaforo2 = atoi(argv[1]);
+  // int distancia_semaforo3 = atoi(argv[2]);
+  // int distancia_bodega = atoi(argv[3]);
   
   // Validando valores de variables
   // printf("distancia_semaforo1: %d\n", distancia_semaforo1);
