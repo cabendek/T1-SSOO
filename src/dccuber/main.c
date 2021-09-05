@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -24,6 +25,7 @@ int cambio_semaforo (int semaforo){
 void print(int sig, siginfo_t *siginfo, void *context) {
   int number_received = siginfo->si_value.sival_int;
   printf("\n\t -----> CTMMMM LLEGO Y RECIBI EL SEMAFORO: %i\n", number_received);
+  exit(0);
 }
 
 /*
@@ -102,8 +104,11 @@ int main(int argc, char const *argv[])
 
     // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
     /* REPARTIDORES */
+    printf("\nEsto SI se deberia imprimir\n");
+    connect_sigaction(SIGUSR1,print);
 
     for (int i = 0; i < envios_necesarios; i++) { 
+      printf("---ENTREE AQUI----\n");
       sleep(tiempo_de_creacion);
       int repartidor = fork();
 
@@ -129,17 +134,14 @@ int main(int argc, char const *argv[])
         if(execv("repartidor", args) == -1) {
           printf("\nfailed connection\n");
         }
-        printf("ESTO NO SE IMPRIME");
       }
     };
-
-    connect_sigaction(SIGUSR1,print);
+    while(true);
+    printf("\n\tEsto NO se deberia imprimir\n");
     wait(NULL); //Manejo de finalizacion
-    exit(0);
 
   } else {
     
-    int pid_padre = getpid();
     char fabrica_s[10];
     sprintf(fabrica_s,"%d",fabrica);
     
