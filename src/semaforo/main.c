@@ -54,7 +54,7 @@ int main(int argc, char const *argv[]) {
   Semaforo* semaforo = semaforo_init();
 
   // comenzar a iterarlo
-  int funcionando = true;
+  // int funcionando = true;
 
   for (int i = 0; i<10; i++) {
     sleep(tiempo);

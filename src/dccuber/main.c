@@ -95,7 +95,7 @@ void signal_reception (int sig, siginfo_t *siginfo, void *context)
 
 int main(int argc, char const *argv[])
 {
-  printf("I'm the DCCUBER process and my PID is: %i\n", getpid());
+  printf("I'm the DCCUBER process and my PID is: %d \n", getpid());
 
   char *filename = "input.txt";
   InputFile *data_in = read_file(filename);
@@ -151,7 +151,7 @@ int main(int argc, char const *argv[])
   
   if (!fabrica) {
     //connect_sigaction (SIGUSR1, interpretar_señal); //recibe del semáforo o del repartidor
-    printf("FABRICA: Hola soy la Fabrica! con PID: %d\n",getpid());
+    printf("FABRICA: Hola soy la Fabrica! con PID: %d \n", getpid());
 
     //Creamos el camino
     
