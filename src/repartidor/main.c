@@ -14,9 +14,9 @@ int posicion_actual = 0;
 void luz_semaforo(int sig, siginfo_t *siginfo, void *context){
   int number_received = siginfo->si_value.sival_int;
   if (number_received == 1) {// En verde
-    posicion_actual +=1;
+    posicion_actual += 1;
     contador_tiempos[semaforo_cruzado] = tiempo;
-    semaforo_cruzado +=1;
+    semaforo_cruzado += 1;
   }
 };
 
@@ -52,22 +52,23 @@ int main(int argc, char const *argv[]){
   // for(int loop = 0; loop < distancia_bodega+1; loop++){
   //   printf("%d-", camino[loop]);
   // };
-  while (1){
+  while (1) {
     printf("REPARTIDOR %d_____Estoy en la posicion => %d \n", getpid(), posicion_actual);
     sleep(10);
     tiempo += 1;
     
     // hay semaforo en siguiente posicion
-    if (camino[posicion_actual + 1] == 1){
+    if (camino[posicion_actual + 1] == 1) {
       printf("Hay un semaforo \n");
       int pid_personal = getpid();
       int pid_parent = getppid();
       int solicitud_envio = pid_personal * 100 + 20 + semaforo_cruzado;
+      posicion_actual +=1; 
       // preguntar estado de la luz
-      send_signal_with_int(pid_parent, solicitud_envio);
+      // send_signal_with_int(pid_parent, solicitud_envio);
       // recibir estado de la luz
       //wait señal****
-      connect_sigaction(SIGUSR1, luz_semaforo);
+      // connect_sigaction(SIGUSR1, luz_semaforo);
     
     // no hay semaforo ni bodega
     } else if (camino[posicion_actual + 1] == 0){ 

@@ -11,7 +11,7 @@ typedef struct semaforo {
   int luz_semaforo;
   int contador_cambios;
 } Semaforo;
-
+ 
 Semaforo* semaforo_init () {
   Semaforo* semaforo = malloc(sizeof(Semaforo));
   *semaforo = (Semaforo) {

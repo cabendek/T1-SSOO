@@ -32,6 +32,7 @@ void handle_sigalrm(int sig) {
     sprintf(distancia_4_s,"%d", distancia_bodega);
 
     char* args[] = {distancia_1_s,distancia_2_s,distancia_3_s,distancia_4_s,NULL};
+    printf("Cree un repartidor\n");
     if(execv("repartidor", args) == -1) {
       printf("\nfailed connection\n");
     }
