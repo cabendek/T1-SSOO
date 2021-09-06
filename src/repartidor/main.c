@@ -25,7 +25,7 @@ void luz_semaforo(int sig, siginfo_t *siginfo, void *context){
 
 void finalizar(int sig){
 
-   // Generar archivo
+  // Generar archivo
   printf("Gracefully finishing\n");
 
   // Abrimos un archivo en modo de lectura

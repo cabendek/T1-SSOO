@@ -15,11 +15,12 @@ int distancia_semaforo1;
 int distancia_semaforo2;
 int distancia_semaforo3;
 int distancia_bodega;
+int repartidor;
 
 void handle_sigalrm(int sig) {
   // Vamos a enviarle todos los números al hijo
 
-  int repartidor = fork();
+  repartidor = fork();
 
   if (!repartidor){
     char distancia_1_s[10];
@@ -155,24 +156,20 @@ int main(int argc, char const *argv[])
     //connect_sigaction (SIGUSR1, interpretar_señal); //recibe del semáforo o del repartidor
     printf("FABRICA: Hola soy la Fabrica! con PID: %d \n", getpid());
 
-    //Creamos el camino
-    
-
-
-    // Fabrica crea a repartidores cada tiempo_de_creacion segundos:
-    
     /* REPARTIDORES */
 
     connect_sigaction(SIGUSR1, handle_siguser1);
     signal(SIGALRM, handle_sigalrm);
     
     alarm(tiempo_de_creacion);
-    // free(camino);
 
-    while(true);
-    printf("\n\tEsto NO se deberia imprimir\n");
-    wait(NULL); //Manejo de finalizacion
+    printf("---- REPARTIDOR PID: %d\n", repartidor);
     
+    //wait(NULL); //Manejo de finalizacion
+    printf("Aca hago el manejo de cuando finalizan los repartidores -----------\n");
+    //while(true);
+    int returnStatus;
+    waitpid(repartidor, &returnStatus, 0);
 
   } else {
 
