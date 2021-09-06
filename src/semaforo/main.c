@@ -17,7 +17,6 @@ void cambio_luz (int pid_fabrica) {
     luz_semaforo = 0;
   }
   contador_cambios += 1;
-  // printf("Accedi a la funcion para mandar señal al PID: %d\n", pid_fabrica);
   int retorno = 10 + id_semaforo;
   send_signal_with_int(pid_fabrica, retorno);
 }

@@ -60,9 +60,11 @@ int main(int argc, char const *argv[]){
   int distancia_semaforo3 = atoi(argv[2]);
   int distancia_bodega = atoi(argv[3]);
   id_repartidor = atoi(argv[4]) - 1;
+  int ultimo_repartidor = atoi(argv[5]);
   
   signal(SIGINT,handle_sigint);
-
+  signal(SIGABRT,finalizar);
+  
   while(true) {
     sleep(1);
     tiempo += 1;
@@ -99,8 +101,6 @@ int main(int argc, char const *argv[]){
     } else if (posicion_actual + 1 == distancia_bodega) {
       printf("LLEGUE A LA BODEGAAA!!!\n");
       posicion_actual += 1;
-      sleep(1);
-      tiempo += 1;
       contador_tiempos[3] = tiempo;
       break;
       
@@ -111,7 +111,10 @@ int main(int argc, char const *argv[]){
     }
   };
 
-  signal(SIGABRT,finalizar);
+  if (ultimo_repartidor) {
+    send_signal_with_int_2(getppid(),0);
+  }
+
   while(true);
   return 0;
 
