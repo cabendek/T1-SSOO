@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
 #include "../file_manager/manager.h"
 
 int estado_semaforos[3] = {1,1,1};
+int pid_semaforos[3];
 int tiempo_repartidores;
 int cant_repartidores;
 int contador = 1;
@@ -16,6 +18,7 @@ int distancia_semaforo2;
 int distancia_semaforo3;
 int distancia_bodega;
 int repartidor;
+int fabrica;
 
 void handle_sigalrm(int sig) {
   // Vamos a enviarle todos los números al hijo
@@ -54,11 +57,10 @@ int cambio_semaforo (int semaforo){
   } else{
     printf("Esto no deberia pasar");
   }
-
   return 0;
 };
 
-// POR MODIFICAR, MANEJO DE 2 RECEPCIONES DE SEÑAL
+// MANEJO DE 2 RECEPCIONES DE SEÑAL
 void handle_siguser1(int sig, siginfo_t *siginfo, void *context) {
   int number_received = siginfo->si_value.sival_int;
   printf("> > > > Mensaje recibido: %d\n",number_received );
@@ -79,22 +81,24 @@ void handle_siguser1(int sig, siginfo_t *siginfo, void *context) {
   }
 };
 
-/*
-void consultar_semaforo (int semaforo, int PID){
-  int estado_semaforo = estado_semaforos[semaforo];
-  // enviar señal estado_semaforo con send_signal_with_int(PID, estado_semaforo)
+void handle_sigint(int sig){
+  printf("Le digo a fabrica que termine con un SIGABRT al PID: %d \n",fabrica);
+  kill(fabrica, SIGABRT); // Mandarle a fabrica la señal SIGABRT
+  // wait(fabrica); //Hacer un wait a que fabrica termine
+  // for (int i = 0; i < 3; i++)
+  //   int pid_a_enviar = pid_semaforos[i];
+  //   kill(pid_a_enviar,SIGABRT);
 };
 
-void signal_reception (int sig, siginfo_t *siginfo, void *context)
-{
-  int number_received = siginfo->si_value.sival_int;
+void handle_sigabrt(int sig){
+  printf("Ahora fabrica sabe que debe terminar y le avisa a los repartidores\n");
+  // for (int i=0 ; i<cant_repartidores;i++) {
+  //   kill(fabrica, SIGABRT); // ACA DEBERIA MANDAR SIGABRT A LOS PROCESOS REPARTIDORES
+  // }
+  // wait(); // Esperar a los repartidores
+  // exit(0);
+};
 
-  //Hacer la conversion del int
-  //cambio_semaforo(id_semaforo);
-
-  //consultar_semaforo(id_semaforo,PID)
-
-};*/
 
 int main(int argc, char const *argv[])
 {
@@ -150,7 +154,7 @@ int main(int argc, char const *argv[])
   // Proceso Principal crea a Fabrica:
   /* FABRICA */
 
-  int fabrica = fork();
+  fabrica = fork();
   
   if (!fabrica) {
     //connect_sigaction (SIGUSR1, interpretar_señal); //recibe del semáforo o del repartidor
@@ -158,18 +162,17 @@ int main(int argc, char const *argv[])
 
     /* REPARTIDORES */
 
+    signal(SIGABRT, handle_sigabrt);
     connect_sigaction(SIGUSR1, handle_siguser1);
     signal(SIGALRM, handle_sigalrm);
-    
+
     alarm(tiempo_de_creacion);
 
-    printf("---- REPARTIDOR PID: %d\n", repartidor);
-    
     //wait(NULL); //Manejo de finalizacion
     printf("Aca hago el manejo de cuando finalizan los repartidores -----------\n");
-    //while(true);
-    int returnStatus;
-    waitpid(repartidor, &returnStatus, 0);
+    while(true);
+    // int returnStatus;
+    // waitpid(repartidor, &returnStatus, 0);
 
   } else {
 
@@ -187,6 +190,7 @@ int main(int argc, char const *argv[])
         printf("\nFallo la conexion del 1er semaforo\n");
       };
     } else {
+      pid_semaforos[0]= semaforo1;
       int semaforo2 = fork();
       if (!semaforo2) {
         // printf("\nSEMAFORO 2\n");
@@ -198,21 +202,25 @@ int main(int argc, char const *argv[])
           printf("\nFallo la conexion del 2do semaforo\n");
         };
       } else {
-          int semaforo3 = fork();
-          if (!semaforo3) {
-            // printf("\nSEMAFORO 3\n");
-            char tiempo_3_s[30];
-            sprintf(tiempo_3_s,"%d", tiempo_3);
+        pid_semaforos[1]= semaforo2;
+        int semaforo3 = fork();
+        if (!semaforo3) {
+          // printf("\nSEMAFORO 3\n");
+          char tiempo_3_s[30];
+          sprintf(tiempo_3_s,"%d", tiempo_3);
 
-            char* argf[] = {tiempo_3_s,fabrica_s,"2",NULL};
-            if(execv("semaforo", argf) == -1){
-              printf("\nFallo la conexion del 3er semaforo\n");
-            };
-          } 
+          char* argf[] = {tiempo_3_s,fabrica_s,"2",NULL};
+          if(execv("semaforo", argf) == -1){
+            printf("\nFallo la conexion del 3er semaforo\n");
+          };
+        } else {
+          pid_semaforos[2]= semaforo3;
+        }
       }
     }
 
-    wait(NULL);
+    signal(SIGINT, handle_sigint);
+    wait(NULL); // Wait al proceso fabrica
       
   }
 

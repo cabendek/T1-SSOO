@@ -8,7 +8,7 @@
 #include "../file_manager/manager.h"
 
 int semaforo_cruzado = 0;
-int contador_tiempos[4] = {0, 0, 0, 0};
+int contador_tiempos[4] = {-1, -1, -1, -1};
 int tiempo = 0;
 int posicion_actual = 0;
 int id_repartidor;
@@ -36,8 +36,9 @@ void finalizar(int sig){
   for (int i = 0; i < 4; i++) {
     fprintf(output, "%i", contador_tiempos[i]);
     // No agregamos el separador al último número
-    if (i + 1 != 4)
+    if (i + 1 != 4) {
       fprintf(output, ", ");
+    }
   }
 
   // Se cierra el archivo (si no hay leak)
