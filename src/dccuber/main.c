@@ -19,6 +19,7 @@ int distancia_semaforo3;
 int distancia_bodega;
 int repartidor;
 int fabrica;
+int* pid_repartidores;
 
 void handle_sigalrm(int sig) {
   // Vamos a enviarle todos los números al hijo
@@ -42,7 +43,9 @@ void handle_sigalrm(int sig) {
     if(execv("repartidor", args) == -1) {
       printf("\nfailed connection\n");
     }
-  };
+  } else {
+    pid_repartidores[contador] = repartidor;
+  }
   if (contador < cant_repartidores) {
     alarm(tiempo_repartidores);
     contador += 1;
@@ -82,21 +85,36 @@ void handle_siguser1(int sig, siginfo_t *siginfo, void *context) {
 };
 
 void handle_sigint(int sig){
-  printf("Le digo a fabrica que termine con un SIGABRT al PID: %d \n",fabrica);
+  printf("PRINCIPAL: Le digo a FABRICA que termine al PID AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: %d \n",fabrica);
   kill(fabrica, SIGABRT); // Mandarle a fabrica la señal SIGABRT
-  // wait(fabrica); //Hacer un wait a que fabrica termine
-  // for (int i = 0; i < 3; i++)
-  //   int pid_a_enviar = pid_semaforos[i];
-  //   kill(pid_a_enviar,SIGABRT);
+
+  waitpid(fabrica, NULL, 0); //Hacer un wait a que fabrica termine
+  
+  printf("PRINCIPAL: Le digo a los SEMAFOROS que terminen \n");
+  kill(pid_semaforos[0],SIGABRT);
+  kill(pid_semaforos[1],SIGABRT);
+  kill(pid_semaforos[2],SIGABRT);
+  waitpid(pid_semaforos[0], NULL, 0);
+  waitpid(pid_semaforos[1], NULL, 0);
+  waitpid(pid_semaforos[2], NULL, 0);
+
+  
 };
 
 void handle_sigabrt(int sig){
-  printf("Ahora fabrica sabe que debe terminar y le avisa a los repartidores\n");
-  // for (int i=0 ; i<cant_repartidores;i++) {
-  //   kill(fabrica, SIGABRT); // ACA DEBERIA MANDAR SIGABRT A LOS PROCESOS REPARTIDORES
-  // }
-  // wait(); // Esperar a los repartidores
-  // exit(0);
+  printf("FABRICA: Le digo a los repartidores que terminen...\n");
+  
+  for (int i=0 ; i<cant_repartidores;i++) {
+    kill(pid_repartidores[i], SIGABRT); // ACA DEBERIA MANDAR SIGABRT A LOS PROCESOS REPARTIDORES
+  }
+  for (int i=0 ; i<cant_repartidores;i++) {
+    waitpid(pid_repartidores[i], NULL, 0); // Esperar a los repartidores
+  }
+  printf("FABRICA: mori XP\n");
+  exit(0);
+};
+
+void handle_sigint_fab(int sig) {
 };
 
 
@@ -145,6 +163,7 @@ int main(int argc, char const *argv[])
 
   tiempo_repartidores = tiempo_de_creacion;
   cant_repartidores = envios_necesarios;
+  pid_repartidores = calloc(cant_repartidores, sizeof(int));
 
   // Printeamos variables (para verificarlas)
   // printf("%d, %d, %d, %d\n",distancia_semaforo1, distancia_semaforo2, distancia_semaforo3, distancia_bodega);
@@ -162,6 +181,7 @@ int main(int argc, char const *argv[])
 
     /* REPARTIDORES */
 
+    signal(SIGINT, handle_sigint_fab);
     signal(SIGABRT, handle_sigabrt);
     connect_sigaction(SIGUSR1, handle_siguser1);
     signal(SIGALRM, handle_sigalrm);
@@ -169,7 +189,6 @@ int main(int argc, char const *argv[])
     alarm(tiempo_de_creacion);
 
     //wait(NULL); //Manejo de finalizacion
-    printf("Aca hago el manejo de cuando finalizan los repartidores -----------\n");
     while(true);
     // int returnStatus;
     // waitpid(repartidor, &returnStatus, 0);
@@ -220,8 +239,8 @@ int main(int argc, char const *argv[])
     }
 
     signal(SIGINT, handle_sigint);
-    wait(NULL); // Wait al proceso fabrica
-      
+
+    free(pid_repartidores);  
   }
 
   return 0;

@@ -26,7 +26,7 @@ void luz_semaforo(int sig, siginfo_t *siginfo, void *context){
 void finalizar(int sig){
 
   // Generar archivo
-  printf("Gracefully finishing\n");
+  printf("Gracefully finishing REPARTIDOR\n");
 
   // Abrimos un archivo en modo de lectura
   char name_file[30]; 
@@ -44,10 +44,11 @@ void finalizar(int sig){
   // Se cierra el archivo (si no hay leak)
   fclose(output);
 
-  // Avisar a fábrica el término --> kill(PID,señal)
-  
   // Terminamos el programa con exit code 0
   exit(0);
+}
+
+void handle_sigint(int sig){
 }
 
 int main(int argc, char const *argv[]){
@@ -59,7 +60,8 @@ int main(int argc, char const *argv[]){
   int distancia_semaforo3 = atoi(argv[2]);
   int distancia_bodega = atoi(argv[3]);
   id_repartidor = atoi(argv[4]) - 1;
-
+  
+  signal(SIGINT,handle_sigint);
 
   while(true) {
     sleep(1);

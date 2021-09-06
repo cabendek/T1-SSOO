@@ -7,28 +7,16 @@
 
 int id_semaforo;
 int funcionando = true;
+int luz_semaforo = 1;
+int contador_cambios = 0;
 
-typedef struct semaforo {
-  int luz_semaforo;
-  int contador_cambios;
-} Semaforo;
- 
-Semaforo* semaforo_init () {
-  Semaforo* semaforo = malloc(sizeof(Semaforo));
-  *semaforo = (Semaforo) {
-    .luz_semaforo = 1,
-    .contador_cambios = 0
-  };
-  return semaforo;
-}
-
-void cambio_luz (Semaforo* semaforo, int pid_fabrica) {
-  if ((semaforo->luz_semaforo = 0)) {
-    semaforo->luz_semaforo = 1;
-  } else if ((semaforo->luz_semaforo = 1)) {
-    semaforo->luz_semaforo = 0;
+void cambio_luz (int pid_fabrica) {
+  if ((luz_semaforo = 0)) {
+    luz_semaforo = 1;
+  } else if ((luz_semaforo = 1)) {
+    luz_semaforo = 0;
   }
-  semaforo->contador_cambios += 1;
+  contador_cambios += 1;
   // printf("Accedi a la funcion para mandar señal al PID: %d\n", pid_fabrica);
   int retorno = 10 + id_semaforo;
   send_signal_with_int(pid_fabrica, retorno);
@@ -36,8 +24,25 @@ void cambio_luz (Semaforo* semaforo, int pid_fabrica) {
 
 void finalizar (int sig) {
   funcionando = false;
+  // Generar archivo
+  printf("Gracefully finishing SEMAFORO\n");
+
+  // Abrimos un archivo en modo de lectura
+  char name_file[30]; 
+  sprintf(name_file,"semaforo_%d.txt", id_semaforo);
+
+  FILE *output = fopen(name_file, "w");
+  fprintf(output, "%i", contador_cambios);
+
+  // Se cierra el archivo (si no hay leak)
+  fclose(output);
+
+  // Finalizar
+  exit(0);
 };
 
+void handle_sigint(int sig){
+}
 
 int main(int argc, char const *argv[]) {
   
@@ -49,42 +54,13 @@ int main(int argc, char const *argv[]) {
   // printf("tiempo:    %d\n", tiempo);
   // printf("id:        %d\n", id_semaforo);
   // printf("I'm the SEMAFORO process and my PID is: %i\n", getpid());
-  
-  // instanciar semáforo
-  Semaforo* semaforo = semaforo_init();
 
-  // for (int i = 0; i<10; i++) {
-  //   sleep(tiempo);
-  //   cambio_luz(semaforo, pid_fabrica);
-  //   // receptor de señal: SIGNAL (alarma, finalizar(funcionando))
-  // }; 
-
+  signal(SIGINT, handle_sigint);
   signal(SIGABRT,finalizar);
+
   while (funcionando) {
     sleep(tiempo);
-    cambio_luz(semaforo, pid_fabrica);
-    // receptor de señal: SIGNAL (alarma, finalizar(funcionando))
+    cambio_luz(pid_fabrica);
   } 
-
-  // escribir archivo output
-  //fwrite semaforo.contador_cambios;
-  
-  // Generar archivo
-  printf("Gracefully finishing\n");
-
-  // Abrimos un archivo en modo de lectura
-  char name_file[30]; 
-  sprintf(name_file,"semaforo_%d.txt", id_semaforo);
-
-  FILE *output = fopen(name_file, "w");
-  fprintf(output, "%i", semaforo -> contador_cambios);
-
-  // Se cierra el archivo (si no hay leak)
-  fclose(output);
-  free(semaforo);
-
-  // finalizar
-  
-  exit(0);
   return 0;
 }
