@@ -26,12 +26,14 @@ void handle_sigalrm(int sig) {
     char distancia_2_s[10];
     char distancia_3_s[10];
     char distancia_4_s[10];
+    char indice_repartidor[10];
     sprintf(distancia_1_s,"%d", distancia_semaforo1);
     sprintf(distancia_2_s,"%d", distancia_semaforo2);
     sprintf(distancia_3_s,"%d", distancia_semaforo3);
     sprintf(distancia_4_s,"%d", distancia_bodega);
+    sprintf(indice_repartidor,"%d", contador);
 
-    char* args[] = {distancia_1_s,distancia_2_s,distancia_3_s,distancia_4_s,NULL};
+    char* args[] = {distancia_1_s,distancia_2_s,distancia_3_s,distancia_4_s,indice_repartidor,NULL};
     printf("Cree un repartidor\n");
     if(execv("repartidor", args) == -1) {
       printf("\nfailed connection\n");
