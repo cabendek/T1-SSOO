@@ -60,7 +60,6 @@ int main(int argc, char const *argv[]){
   int distancia_semaforo3 = atoi(argv[2]);
   int distancia_bodega = atoi(argv[3]);
   id_repartidor = atoi(argv[4]) - 1;
-  int ultimo_repartidor = atoi(argv[5]);
   
   signal(SIGINT,handle_sigint);
   signal(SIGABRT,finalizar);
@@ -111,9 +110,7 @@ int main(int argc, char const *argv[]){
     }
   };
 
-  if (ultimo_repartidor) {
-    send_signal_with_int_2(getppid(),0);
-  }
+  send_signal_with_int_2(getppid(),0);
 
   while(true);
   return 0;

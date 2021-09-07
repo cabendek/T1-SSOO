@@ -20,7 +20,7 @@ int distancia_bodega;
 int repartidor;
 int fabrica;
 int* pid_repartidores;
-int ultimo_repartidor = 0;
+int repartidores_finalizados = 0;
 
 void handle_sigalrm(int sig) {
   // Vamos a enviarle todos los números al hijo
@@ -28,24 +28,19 @@ void handle_sigalrm(int sig) {
   repartidor = fork();
 
   if (!repartidor){
-    if (contador == cant_repartidores){
-      ultimo_repartidor = 1;
-    }
     
     char distancia_1_s[10];
     char distancia_2_s[10];
     char distancia_3_s[10];
     char distancia_4_s[10];
     char indice_repartidor[10];
-    char ultimo_repartidor_s[10];
     sprintf(distancia_1_s,"%d", distancia_semaforo1);
     sprintf(distancia_2_s,"%d", distancia_semaforo2);
     sprintf(distancia_3_s,"%d", distancia_semaforo3);
     sprintf(distancia_4_s,"%d", distancia_bodega);
     sprintf(indice_repartidor,"%d", contador);
-    sprintf(ultimo_repartidor_s,"%d", ultimo_repartidor);
 
-    char* args[] = {distancia_1_s,distancia_2_s,distancia_3_s,distancia_4_s,indice_repartidor,ultimo_repartidor_s,NULL};
+    char* args[] = {distancia_1_s,distancia_2_s,distancia_3_s,distancia_4_s,indice_repartidor,NULL};
     printf("Cree un repartidor\n");
     if(execv("repartidor", args) == -1) {
       printf("\nfailed connection\n");
@@ -92,8 +87,8 @@ void handle_siguser1(int sig, siginfo_t *siginfo, void *context) {
 };
 
 void handle_siguser2(int sig, siginfo_t *siginfo, void *context){
-  int number_received = siginfo->si_value.sival_int;
-  if (number_received == 0){
+  repartidores_finalizados += 1;
+  if (repartidores_finalizados == cant_repartidores){
     kill(getppid(),SIGINT);
   }
 }
