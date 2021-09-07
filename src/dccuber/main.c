@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -130,8 +131,9 @@ void handle_sigint_fab(int sig) {
 int main(int argc, char const *argv[])
 {
   printf("I'm the DCCUBER process and my PID is: %d \n", getpid());
-
-  char *filename = "input.txt";
+  char filename[20];
+  strcpy(filename,argv[1]);
+  //char *filename = "input.txt";
   InputFile *data_in = read_file(filename);
 
   printf("Leyendo el archivo %s...\n", filename);
