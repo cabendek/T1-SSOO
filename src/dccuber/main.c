@@ -91,6 +91,8 @@ void handle_siguser2(int sig, siginfo_t *siginfo, void *context){
   repartidores_finalizados += 1;
   if (repartidores_finalizados == cant_repartidores){
     kill(getppid(),SIGINT);
+  } else {
+    printf("+++++++++++++ REPARTIDORES FINALIZADOS: %d\n", repartidores_finalizados);
   }
 }
 
